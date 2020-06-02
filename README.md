@@ -1,7 +1,7 @@
 # CleanArchitectureExample
 ##### CleanArchitectureExample is a project based on .net core and whose function is to serve as a means of study for me and for other people who may use it or even a scaffold for your own personal project.
 ###
-##### For example, a cataloging system for books and loans was created in a very basic way
+##### For example purpose, a cataloging system for books and loans was created in a very basic way
 ##
 ### In this project were apllied the concepts of:
 - ##### DDD
