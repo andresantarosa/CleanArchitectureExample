@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArchitectureExample.Application\CleanArchitectureExample.Application.csproj" />
+    <ProjectReference Include="..\CleanArchitectureExample.Domain.Core\CleanArchitectureExample.Domain.Core.csproj" />
+    <ProjectReference Include="..\CleanArchitectureExample.Domain\CleanArchitectureExample.Domain.csproj" />
+    <ProjectReference Include="..\CleanArchitectureExample.Persistence\CleanArchitectureExample.Persistence.csproj" />
+    <ProjectReference Include="..\CleanArchitectureExample.Service\CleanArchitectureExample.Service.csproj" />
+  </ItemGroup>
+
+</Project>
