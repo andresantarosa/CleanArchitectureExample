@@ -17,7 +17,7 @@ namespace CleanArchitectureExample.Domain.RequestHandlers.BookLoanHandlers.Comma
 
         async Task INotificationHandler<LoanEffetivatedEvent>.Handle(LoanEffetivatedEvent notification, CancellationToken cancellationToken)
         {
-            _emailServices.SendEmail(new List<string> { notification.Email }, "Book loan", $"Book {notification.BookName} lent, expected return date {notification.ReturnDate.ToShortDateString()}");            
+            await _emailServices.SendEmail(new List<string> { notification.Email }, "Book loan", $"Book {notification.BookName} lent, expected return date {notification.ReturnDate.ToShortDateString()}");            
         }
     }
 }

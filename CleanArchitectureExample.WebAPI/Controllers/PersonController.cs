@@ -1,4 +1,5 @@
-﻿using CleanArchitectureExample.Domain.Core.DomainNotification;
+﻿using CleanArchitectureExample.Application.Orchestration;
+using CleanArchitectureExample.Domain.Core.DomainNotification;
 using CleanArchitectureExample.Domain.Interfaces.Events;
 using CleanArchitectureExample.Domain.Interfaces.Persistence.UnitOfWork;
 using CleanArchitectureExample.Domain.RequestHandlers.PersonHandlers.Commands.AddPerson;
@@ -13,27 +14,27 @@ namespace CleanArchitectureExample.WebAPI.Controllers
     [ApiController]
     public class PersonController : BaseController
     {
-        public PersonController(IUnitOfWork unitOfWork,
-            IDomainNotifications domainNotifications,
-            IEventDispatcher eventDispatcher,
-            IMediator mediator) : base(unitOfWork, domainNotifications, eventDispatcher, mediator)
+        private readonly IOrquestrator _orquestrator;
+
+        public PersonController(IOrquestrator orquestrator)
         {
+            _orquestrator = orquestrator;
         }
 
         [Route("Add/v1")]
         [HttpPost]
         public async Task<IActionResult> AddPerson(AddPersonCommand command)
         {
-            var result = await _mediator.Send(command);
-            return await ReturnCommand(result);
+            RequestResult requestResult = await _orquestrator.SendCommand(command);
+            return await ReturnRequestResult(requestResult);
         }
 
         [Route("GetAll/v1")]
         [HttpGet]
         public async Task<IActionResult> GetAll(GetAllPeopleQuery query)
         {
-            var result = await _mediator.Send(query);
-            return ReturnQuery(result);
+            var result = await _orquestrator.SendQuery(query);
+            return await ReturnRequestResult(result);
         }
     }
 }

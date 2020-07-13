@@ -1,4 +1,5 @@
-﻿using CleanArchitectureExample.Domain.Core.DomainNotification;
+﻿using CleanArchitectureExample.Application.Orchestration;
+using CleanArchitectureExample.Domain.Core.DomainNotification;
 using CleanArchitectureExample.Domain.Interfaces.Events;
 using CleanArchitectureExample.Domain.Interfaces.Persistence.UnitOfWork;
 using CleanArchitectureExample.Domain.RequestHandlers.BookLoanHandlers.Commands.RequestLoan;
@@ -14,35 +15,35 @@ namespace CleanArchitectureExample.WebAPI.Controllers
     [ApiController]
     public class BookLoanController : BaseController
     {
-        public BookLoanController(IUnitOfWork unitOfWork,
-            IDomainNotifications domainNotifications,
-            IEventDispatcher eventDispatcher,
-            IMediator mediator) : base(unitOfWork, domainNotifications, eventDispatcher, mediator)
+        private readonly IOrquestrator _orquestrator;
+
+        public BookLoanController(IOrquestrator orquestrator)
         {
+            _orquestrator = orquestrator;
         }
 
         [HttpPost]
         [Route("RequestLoan/v1")]
         public async Task<IActionResult> Loan(RequestLoanCommand command)
         {
-            var result = await _mediator.Send(command, new System.Threading.CancellationToken());
-            return await ReturnCommand(result);
+            RequestResult requestResult = await _orquestrator.SendCommand(command);
+            return await ReturnRequestResult(requestResult);
         }
 
         [HttpPost]
         [Route("ReturnBook/v1")]
         public async Task<IActionResult> ReturnBook(ReturnBookCommand command)
         {
-            var result = await _mediator.Send(command, new System.Threading.CancellationToken());
-            return await ReturnCommand(result);
+            RequestResult requestResult = await _orquestrator.SendCommand(command);
+            return await ReturnRequestResult(requestResult);
         }
 
         [HttpGet]
         [Route("GetAll/v1")]
         public async Task<IActionResult> GetAllLoans(BookLoanGetAllQuery query)
         {
-            var result = await _mediator.Send(query, new System.Threading.CancellationToken());
-            return ReturnQuery(result);
+            RequestResult requestResult = await _orquestrator.SendQuery(query);
+            return await ReturnRequestResult(requestResult);
         }
     }
 }
