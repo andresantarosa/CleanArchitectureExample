@@ -3,7 +3,7 @@
 ###
 ##### For example purpose, a cataloging system for books and loans was created in a very basic way
 ##
-### In this project were apllied the concepts of:
+### In this project were applied the concepts of:
 - ##### DDD
 - ##### CleanCode
 - ##### Domain Notifications
@@ -18,10 +18,11 @@
 - ##### Entify Framework (EF Core)
 - ##### MediatR
 - ##### Fluent Assertions
+- ##### Polly
 - ##### XUnit
 - ##### Moq.
 - ##### Moq.AutoMock
 ##
 #####  Feel free to use it or modify it as you wish.
 ##### Be careful when using it in a production environment
-##### Suggestions for improvements are very welcome and if you found a bugs or have any question just open an Issue and I'll take a look as soon as possible =)
+##### Suggestions for improvements are very welcome and if you find any bugs or have any questions just open an Issue and I'll take a look as soon as possible =)

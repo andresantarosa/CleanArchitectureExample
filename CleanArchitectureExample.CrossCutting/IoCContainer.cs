@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CleanArchitectureExample.Application.DomainNotifications;
 using CleanArchitectureExample.Application.Events;
+using CleanArchitectureExample.Application.Orchestration;
 using CleanArchitectureExample.Domain.Core.DomainNotification;
 using CleanArchitectureExample.Domain.Interfaces.Events;
 using CleanArchitectureExample.Domain.Interfaces.Persistence.Repositories;
@@ -23,7 +24,7 @@ namespace CleanArchitectureExample.CrossCutting
     {
         public static void InitializeContainer(IServiceCollection services)
         {
-            string connectionString = "Data Source=localhost;Initial Catalog=CleanArchitectureExample;Persist Security Info=False;User ID=your_user;Password=your_password;";
+            string connectionString = "Data Source=localhost;Initial Catalog=CleanArchitectureExample;Persist Security Info=False;User ID=sa;Password=123456;";
 
             //Inject external tools
             services.AddAutoMapper(AppDomain.CurrentDomain.Load("CleanArchitectureExample.Domain"));
@@ -35,6 +36,7 @@ namespace CleanArchitectureExample.CrossCutting
 
 
             //Inject internal work classes
+            services.AddScoped<IOrquestrator, Orchestrator>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDomainNotifications, DomainNotifications>();
             services.AddSingleton<IContainer, HttpContextServiceProviderProxy>();

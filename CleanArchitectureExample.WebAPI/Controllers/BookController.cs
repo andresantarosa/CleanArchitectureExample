@@ -1,4 +1,5 @@
-﻿using CleanArchitectureExample.Domain.Core.DomainNotification;
+﻿using CleanArchitectureExample.Application.Orchestration;
+using CleanArchitectureExample.Domain.Core.DomainNotification;
 using CleanArchitectureExample.Domain.Interfaces.Events;
 using CleanArchitectureExample.Domain.Interfaces.Persistence.UnitOfWork;
 using CleanArchitectureExample.Domain.RequestHandlers.BookHandlers.Commands.AddBook;
@@ -12,19 +13,19 @@ namespace CleanArchitectureExample.WebAPI.Controllers
     [ApiController]
     public class BookController : BaseController
     {
-        public BookController(IUnitOfWork unitOfWork,
-            IDomainNotifications domainNotifications,
-            IEventDispatcher eventDispatcher,
-            IMediator mediator) : base(unitOfWork, domainNotifications, eventDispatcher, mediator)
+        private readonly IOrquestrator _orquestrator;
+
+        public BookController(IOrquestrator orquestrator)
         {
+            _orquestrator = orquestrator;
         }
 
         [Route("Add/v1")]
         [HttpPost]
         public async Task<IActionResult> AddBook(AddBookCommand command)
         {
-            AddBookCommandResponseViewModel result = await _mediator.Send(command);
-            return await ReturnCommand(result);
+            RequestResult requestResult = await _orquestrator.SendCommand(command);
+            return await ReturnRequestResult(requestResult);
         }
     }
 }
