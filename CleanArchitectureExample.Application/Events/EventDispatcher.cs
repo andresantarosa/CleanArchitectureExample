@@ -32,18 +32,14 @@ namespace CleanArchitectureExample.Application.Events
 
         public async Task FireAfterCommitEvents()
         {
-            AfterCommitEvents.ForEach(async x =>
-            {
-                await _mediator.Publish(x);
-            });
+            foreach (var evt in AfterCommitEvents)
+                await _mediator.Publish(evt);
         }
 
         public async Task FirePreCommitEvents()
         {
-            PreCommitEvents.ForEach(async x =>
-            {
-                await _mediator.Publish(x);
-            });
+            foreach (var evt in PreCommitEvents)
+                await _mediator.Publish(evt);
         }
 
         public List<INotification> GetAfterCommitEvents()
