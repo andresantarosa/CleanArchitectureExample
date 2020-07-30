@@ -9,18 +9,16 @@ using Xunit;
 
 namespace CleanArchitectureExample.Tests.AuthorTests.Entities
 {
-    public class AuthorTests
+    public class AuthorTests : TestBaseArrangements
     {
-        public AuthorTests()
+        public AuthorTests() : base()
         {
-            DomainNotificationsFacade.SetTestingEnvironment();
         }
 
         [Fact]
         public void ValidateAuthor_WithEmptyGuidAndInvalidName_ShouldReturnEmptyGuidAndNameLenghtBellow()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
 
 
             Author author = new Author(Guid.Empty, "fdfd");
@@ -29,7 +27,7 @@ namespace CleanArchitectureExample.Tests.AuthorTests.Entities
             author.Validate();
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty()
+            DomainNotifications.GetAll().Should().NotBeEmpty()
                                                  .And.Contain(x => x == Domain.Resources.Messages.Author_AuthorGuidIsEmpty)
                                                  .And.Contain(x => x == Domain.Resources.Messages.Author_AuthorNameShouldHaveAtLeastFiveChars)
                                                  .And.HaveCount(2);
@@ -41,7 +39,6 @@ namespace CleanArchitectureExample.Tests.AuthorTests.Entities
         {
 
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
 
 
             Author author = new Author(Guid.NewGuid(), "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et ");
@@ -50,7 +47,7 @@ namespace CleanArchitectureExample.Tests.AuthorTests.Entities
             author.Validate();
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty()
+            DomainNotifications.GetAll().Should().NotBeEmpty()
                                                  .And.Contain(x => x == Domain.Resources.Messages.Author_AuthorNameNoLongerThantAHundredChars)
                                                  .And.HaveCount(1);
 
@@ -60,14 +57,13 @@ namespace CleanArchitectureExample.Tests.AuthorTests.Entities
         public void ValidateAuthor_WithNullName_ShouldReturnNullNameError()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Author author = new Author(Guid.NewGuid(), null);
 
             //Act
             author.Validate();
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty().
+            DomainNotifications.GetAll().Should().NotBeEmpty().
                                                          And.Contain(x => x == Domain.Resources.Messages.Author_AuthorNameIsNull);
         }
     }

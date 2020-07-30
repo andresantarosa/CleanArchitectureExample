@@ -1,9 +1,6 @@
 ﻿using CleanArchitectureExample.Domain.Core.DomainNotification;
 using MediatR;
 using Moq.AutoMock;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CleanArchitectureExample.Tests.Base
 {
@@ -15,9 +12,11 @@ namespace CleanArchitectureExample.Tests.Base
 
         public TestBaseArrangements()
         {
+
             Mocker = new AutoMocker();
             Mediator = Mocker.CreateInstance<Mediator>();
             DomainNotifications = Mocker.CreateInstance<DomainNotifications>();
+            DomainNotificationsFacade.SetTestingEnvironment();
             DomainNotificationsFacade.SetNotificationsContainer(DomainNotifications);
 
         }

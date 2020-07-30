@@ -15,11 +15,10 @@ using Xunit;
 
 namespace CleanArchitectureExample.Tests.BookTests.Commands
 {
-    public class AddBookCommandTests
+    public class AddBookCommandTests: TestBaseArrangements
     {
-        public AddBookCommandTests()
+        public AddBookCommandTests():base()
         {
-            DomainNotificationsFacade.SetTestingEnvironment();
         }
 
         [Theory]
@@ -28,18 +27,17 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
         public async void HandleAddBookCommand_WithInvalidGuid_ShouldReturnInvalidAuthorGuid(string authorId, string outputError)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             AddBookCommand addBookCommand = new AddBookCommand("Pet Sematary", 2013, 1, "9788581050393", authorId);
-            var sut = baseArrangements.Mocker.CreateInstance<AddBookCommandHandler>();
+            var sut = Mocker.CreateInstance<AddBookCommandHandler>();
 
             //Act
             AddBookCommandResponseViewModel result = await sut.Handle(addBookCommand, new CancellationToken());
 
             //Assert
 
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                           .And.Contain(x => x == outputError);
-            baseArrangements.Mocker.GetMock<IAuthorRepository>().Verify(x => x.GetAuthorById(It.IsAny<Guid>()), Times.Never());
+            Mocker.GetMock<IAuthorRepository>().Verify(x => x.GetAuthorById(It.IsAny<Guid>()), Times.Never());
 
         }
 
@@ -49,7 +47,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
         public void HandleAddBookCommand_WithInvalidName_ShouldReturnInvalidName()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "   ", 2020, 2, "432423431", new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -57,9 +54,9 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_TitleShouldNotBeNullOrEmpty);
-            baseArrangements.Mocker.GetMock<IBookRepository>().Verify(x => x.AddBook(It.IsAny<Book>()), Times.Never());
+            Mocker.GetMock<IBookRepository>().Verify(x => x.AddBook(It.IsAny<Book>()), Times.Never());
 
         }
 
@@ -67,12 +64,11 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
         public async void HandleAddBookCommand_WitInvalidAuthor_ShouldReturnInvalidAuthor()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             AddBookCommand addBookCommand = new AddBookCommand("Pet Sematary", 2013, 1, "9788581050393", Guid.NewGuid().ToString());
-            var sut = baseArrangements.Mocker.CreateInstance<AddBookCommandHandler>();
+            var sut = Mocker.CreateInstance<AddBookCommandHandler>();
 
 
-            baseArrangements.Mocker.GetMock<IAuthorRepository>()
+            Mocker.GetMock<IAuthorRepository>()
                                    .Setup(b => b.GetAuthorById(It.IsAny<Guid>()))
                                    .Returns(() => Task.FromResult<Author>(null));
 
@@ -80,9 +76,9 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
             AddBookCommandResponseViewModel result = await sut.Handle(addBookCommand, new CancellationToken());
 
             //Assert
-            baseArrangements.Mocker.GetMock<IAuthorRepository>().Verify(x => x.GetAuthorById(It.IsAny<Guid>()), Times.Once());
-            baseArrangements.Mocker.GetMock<IBookRepository>().Verify(x => x.AddBook(It.IsAny<Book>()), Times.Never());
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty()
+            Mocker.GetMock<IAuthorRepository>().Verify(x => x.GetAuthorById(It.IsAny<Guid>()), Times.Once());
+            Mocker.GetMock<IBookRepository>().Verify(x => x.AddBook(It.IsAny<Book>()), Times.Never());
+            DomainNotifications.GetAll().Should().NotBeEmpty()
                                                 .And.Contain(x => x == Messages.Book_AuthorShouldNotBeNull);
         }
 
@@ -90,7 +86,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
         public async void HandleAddBookCommand_WithCorrectParameters_ShouldReturnNoErrors()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
 
             #region .:: Objects build ::.
             AddBookCommand addBookCommand = new AddBookCommand("Pet Sematary", 2013, 1, "9788581050393", Guid.NewGuid().ToString());
@@ -99,24 +94,24 @@ namespace CleanArchitectureExample.Tests.BookTests.Commands
             #endregion
 
             #region .:: Mocks ::.
-            baseArrangements.Mocker.GetMock<IAuthorRepository>()
+            Mocker.GetMock<IAuthorRepository>()
                                    .Setup(b => b.GetAuthorById(It.IsAny<Guid>()))
                                    .Returns(() => Task.FromResult<Author>(author));
 
-            baseArrangements.Mocker.GetMock<IBookRepository>()
+            Mocker.GetMock<IBookRepository>()
                                    .Setup(b => b.AddBook(It.IsAny<Book>()))
                                    .Returns(() => Task.FromResult(book));
             #endregion
 
-            var sut = baseArrangements.Mocker.CreateInstance<AddBookCommandHandler>();
+            var sut = Mocker.CreateInstance<AddBookCommandHandler>();
 
             //Act
             AddBookCommandResponseViewModel result = await sut.Handle(addBookCommand, new CancellationToken());
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().BeEmpty();
-            baseArrangements.Mocker.GetMock<IAuthorRepository>().Verify(x => x.GetAuthorById(It.IsAny<Guid>()), Times.Once());
-            baseArrangements.Mocker.GetMock<IBookRepository>().Verify(x => x.AddBook(It.IsAny<Book>()), Times.Once());
+            DomainNotifications.GetAll().Should().BeEmpty();
+            Mocker.GetMock<IAuthorRepository>().Verify(x => x.GetAuthorById(It.IsAny<Guid>()), Times.Once());
+            Mocker.GetMock<IBookRepository>().Verify(x => x.AddBook(It.IsAny<Book>()), Times.Once());
         }
     }
 }

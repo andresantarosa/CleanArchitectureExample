@@ -9,11 +9,10 @@ using Xunit;
 
 namespace CleanArchitectureExample.Tests.PersonTests.Entity
 {
-    public class PersonTests
+    public class PersonTests: TestBaseArrangements
     {
-        public PersonTests()
+        public PersonTests():base()
         {
-            DomainNotificationsFacade.SetTestingEnvironment();
         }
 
         [Theory]
@@ -24,7 +23,6 @@ namespace CleanArchitectureExample.Tests.PersonTests.Entity
         {
 
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
 
             Person person = null;
             person = new Person(Guid.NewGuid(), document, name, email);
@@ -36,7 +34,7 @@ namespace CleanArchitectureExample.Tests.PersonTests.Entity
             person.Validate();
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty()
+            DomainNotifications.GetAll().Should().NotBeEmpty()
                                                  .And.Contain(x => x == Domain.Resources.Messages.Person_NameMiniumCharError)
                                                  .And.HaveCount(1);
 
@@ -50,7 +48,6 @@ namespace CleanArchitectureExample.Tests.PersonTests.Entity
         {
 
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
 
             Person person = null;
             person = new Person(Guid.NewGuid(), document, name, email);
@@ -62,7 +59,7 @@ namespace CleanArchitectureExample.Tests.PersonTests.Entity
             person.Validate();
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty()
+            DomainNotifications.GetAll().Should().NotBeEmpty()
                                                  .And.Contain(x => x == Domain.Resources.Messages.Person_DocumentIsEmptyError)
                                                  .And.Contain(x => x == Domain.Resources.Messages.Person_DocumentWrognCharCount)
                                                  .And.HaveCount(2);
@@ -75,8 +72,6 @@ namespace CleanArchitectureExample.Tests.PersonTests.Entity
         {
 
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
-
 
             Person person = null;
             person = new Person(Guid.NewGuid(), document, name, email);
@@ -88,7 +83,7 @@ namespace CleanArchitectureExample.Tests.PersonTests.Entity
             person.Validate();
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty()
+            DomainNotifications.GetAll().Should().NotBeEmpty()
                                                  .And.Contain(x => x == Domain.Resources.Messages.Person_DocumentWrognCharCount)
                                                  .And.HaveCount(1);
         }

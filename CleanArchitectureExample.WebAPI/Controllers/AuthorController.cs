@@ -22,7 +22,7 @@ namespace CleanArchitectureExample.WebAPI.Controllers
 
         [HttpPost]
         [Route("Add/v1")]
-        public async Task<IActionResult> AddAuthor(AddAuthorCommand command)
+        public async Task<IActionResult> AddAuthor([FromBody] AddAuthorCommand command)
         {
             RequestResult requestResult = await _orquestrator.SendCommand(command);
             return await ReturnRequestResult(requestResult);

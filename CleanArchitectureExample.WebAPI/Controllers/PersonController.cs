@@ -23,7 +23,7 @@ namespace CleanArchitectureExample.WebAPI.Controllers
 
         [Route("Add/v1")]
         [HttpPost]
-        public async Task<IActionResult> AddPerson(AddPersonCommand command)
+        public async Task<IActionResult> AddPerson([FromBody] AddPersonCommand command)
         {
             RequestResult requestResult = await _orquestrator.SendCommand(command);
             return await ReturnRequestResult(requestResult);
@@ -31,9 +31,9 @@ namespace CleanArchitectureExample.WebAPI.Controllers
 
         [Route("GetAll/v1")]
         [HttpGet]
-        public async Task<IActionResult> GetAll(GetAllPeopleQuery query)
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _orquestrator.SendQuery(query);
+            var result = await _orquestrator.SendQuery(new GetAllPeopleQuery());
             return await ReturnRequestResult(result);
         }
     }

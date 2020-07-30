@@ -10,11 +10,10 @@ using Xunit;
 
 namespace CleanArchitectureExample.Tests.AuthorTests.Commands
 {
-    public class AddAuthorCommandTest
+    public class AddAuthorCommandTest : TestBaseArrangements
     {
-        public AddAuthorCommandTest()
+        public AddAuthorCommandTest() : base()
         {
-            DomainNotificationsFacade.SetTestingEnvironment();
         }
 
         [Theory]
@@ -24,31 +23,29 @@ namespace CleanArchitectureExample.Tests.AuthorTests.Commands
         public async void HandleAddAuthorCommand_WithInvalidMinimumChars_ShouldReturnError(string authorName)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             AddAuthorCommand request = new AddAuthorCommand(authorName);
-            var sut = baseArrangements.Mocker.CreateInstance<AddAuthorCommandHandler>();
+            var sut = Mocker.CreateInstance<AddAuthorCommandHandler>();
             //Act
             await sut.Handle(request, new CancellationToken());
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeEmpty();
-            baseArrangements.Mocker.GetMock<IAuthorRepository>().Verify(x => x.AddAuthor(It.IsAny<Author>()), Times.Never);
+            DomainNotifications.GetAll().Should().NotBeEmpty();
+            Mocker.GetMock<IAuthorRepository>().Verify(x => x.AddAuthor(It.IsAny<Author>()), Times.Never);
         }
 
         [Fact]
         public async void HandleAddAuthorCommand_WithValidAuthor_ShouldReturnNoErrors()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             AddAuthorCommand request = new AddAuthorCommand("Stephen King");
-            var sut = baseArrangements.Mocker.CreateInstance<AddAuthorCommandHandler>();
-            
+            var sut = Mocker.CreateInstance<AddAuthorCommandHandler>();
+
             //Act
             await sut.Handle(request, new CancellationToken());
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().BeEmpty();
-            baseArrangements.Mocker.GetMock<IAuthorRepository>().Verify(x => x.AddAuthor(It.IsAny<Author>()), Times.Once);
+            DomainNotifications.GetAll().Should().BeEmpty();
+            Mocker.GetMock<IAuthorRepository>().Verify(x => x.AddAuthor(It.IsAny<Author>()), Times.Once);
         }
     }
 }
