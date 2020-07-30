@@ -24,7 +24,7 @@ namespace CleanArchitectureExample.WebAPI.Controllers
 
         [HttpPost]
         [Route("RequestLoan/v1")]
-        public async Task<IActionResult> Loan(RequestLoanCommand command)
+        public async Task<IActionResult> Loan([FromBody] RequestLoanCommand command)
         {
             RequestResult requestResult = await _orquestrator.SendCommand(command);
             return await ReturnRequestResult(requestResult);
@@ -32,7 +32,7 @@ namespace CleanArchitectureExample.WebAPI.Controllers
 
         [HttpPost]
         [Route("ReturnBook/v1")]
-        public async Task<IActionResult> ReturnBook(ReturnBookCommand command)
+        public async Task<IActionResult> ReturnBook([FromBody] ReturnBookCommand command)
         {
             RequestResult requestResult = await _orquestrator.SendCommand(command);
             return await ReturnRequestResult(requestResult);
@@ -40,9 +40,9 @@ namespace CleanArchitectureExample.WebAPI.Controllers
 
         [HttpGet]
         [Route("GetAll/v1")]
-        public async Task<IActionResult> GetAllLoans(BookLoanGetAllQuery query)
+        public async Task<IActionResult> GetAllLoans()
         {
-            RequestResult requestResult = await _orquestrator.SendQuery(query);
+            RequestResult requestResult = await _orquestrator.SendQuery(new BookLoanGetAllQuery());
             return await ReturnRequestResult(requestResult);
         }
     }

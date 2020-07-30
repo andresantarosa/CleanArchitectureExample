@@ -10,13 +10,10 @@ using Xunit;
 
 namespace CleanArchitectureExample.Tests.BookTests.Entities
 {
-    public class BookTests
+    public class BookTests: TestBaseArrangements
     {
-        static int currentYear = DateTime.Now.Year;
-
-        public BookTests()
+        public BookTests():base()
         {
-            DomainNotificationsFacade.SetTestingEnvironment();
         }
 
         [Theory]
@@ -27,7 +24,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithInvalidName_ShouldReturnInvalidName(string BookTitle)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), BookTitle, 2020, 2, "432423431", new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -35,7 +31,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_TitleShouldNotBeNullOrEmpty);
         }
 
@@ -45,7 +41,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithInvalidReleaseDate_ShouldReturnInvalidReleaseDate(int releaseDate)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", releaseDate, 2, "432423431", new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -53,7 +48,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_ReleaseYearShouldNotBeLowerThan1);
         }
 
@@ -61,7 +56,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithInvalidReleaseDate_ShouldReturnReleaseYearCanntoBeGreaterThanCurrentYear()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", DateTime.Now.Year+1, 2, "432423431", new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -69,7 +63,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_ReleaseYearCannotBeGraterThanCurrentYear);
         }
 
@@ -79,7 +73,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithInvalidEdition_ShouldReturnInvalidEdition(int edition)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", DateTime.Now.Year, edition, "432423431", new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -87,7 +80,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_EditionCannotBeLowerThan1);
         }
 
@@ -99,7 +92,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithReleaseDatePrior2008AndInvalidISBNLength_ShouldReturnInvalidISBNLengthForReleaseDate(string isbn)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", 2007, 1, isbn, new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -107,7 +99,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_ISBNShouldHave10Chars);
         }
 
@@ -119,7 +111,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithReleaseDatePrior2007AndInvalidISBNLength_ShouldReturnInvalidISBNLengthForReleaseDate(string isbn)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", 2006, 1, isbn, new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -127,7 +118,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_ISBNShouldHave10Chars);
         }
 
@@ -139,7 +130,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithReleaseDateLatter2007AndInvalidISBNLength_ShouldReturnInvalidISBNLengthForReleaseDate(string isbn)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", 2009, 1, isbn, new Author(Guid.NewGuid(), "Stephen King"));
 
             //Act
@@ -147,7 +137,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_ISBNShouldHave13Chars);
         }
 
@@ -155,7 +145,6 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
         public void ValidateBook_WithInvalidAuthor_ShouldReturnInvalidAuthor()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             Book book = new Book(Guid.NewGuid(), "Pet Sematary", 2009, 1, "1234567896541", null);
 
             //Act
@@ -163,7 +152,7 @@ namespace CleanArchitectureExample.Tests.BookTests.Entities
 
             //Assert
             isValid.Should().BeFalse();
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                                   .And.Contain(x => x == Messages.Book_AuthorShouldNotBeNull);
         }
     }

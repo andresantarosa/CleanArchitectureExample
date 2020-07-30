@@ -17,11 +17,10 @@ using Xunit;
 
 namespace CleanArchitectureExample.Tests.BookLoanTests.Commands
 {
-    public class ReturnBookCommandTests
+    public class ReturnBookCommandTests: TestBaseArrangements
     {
-        public ReturnBookCommandTests()
+        public ReturnBookCommandTests():base()
         {
-            DomainNotificationsFacade.SetTestingEnvironment();
         }
 
         
@@ -31,18 +30,17 @@ namespace CleanArchitectureExample.Tests.BookLoanTests.Commands
         public async void HandleReturnBookCommand_WithInvalidGuid_ShouldReturnInvalidLoanGuid(string loanId, string outputError)
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             ReturnBookCommand returnBookCommand = new ReturnBookCommand(loanId);
-            var sut = baseArrangements.Mocker.CreateInstance<ReturnBookCommandHandler>();
+            var sut = Mocker.CreateInstance<ReturnBookCommandHandler>();
 
             //Act
             ReturnBookCommandResponseViewModel result = await sut.Handle(returnBookCommand, new CancellationToken());
 
             //Assert
 
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                           .And.Contain(x => x == outputError);
-            baseArrangements.Mocker.GetMock<IBookLoanRepository>().Verify(x => x.Update(It.IsAny<BookLoan>()), Times.Never());
+            Mocker.GetMock<IBookLoanRepository>().Verify(x => x.Update(It.IsAny<BookLoan>()), Times.Never());
 
         }
 
@@ -50,11 +48,10 @@ namespace CleanArchitectureExample.Tests.BookLoanTests.Commands
         public async void HandleReturnBookCommand_WithInvalidLoan_ShouldReturnInvalidLoan() 
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             ReturnBookCommand returnBookCommand = new ReturnBookCommand(Guid.NewGuid().ToString());
-            var sut = baseArrangements.Mocker.CreateInstance<ReturnBookCommandHandler>();
+            var sut = Mocker.CreateInstance<ReturnBookCommandHandler>();
 
-            baseArrangements.Mocker.GetMock<IBookLoanRepository>()
+            Mocker.GetMock<IBookLoanRepository>()
                                    .Setup(p => p.GetByLoanId(It.IsAny<Guid>(), It.IsAny<bool>()))
                                    .Returns(() => Task.FromResult<BookLoan>(null));
 
@@ -62,10 +59,10 @@ namespace CleanArchitectureExample.Tests.BookLoanTests.Commands
             ReturnBookCommandResponseViewModel result = await sut.Handle(returnBookCommand, new CancellationToken());
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
+            DomainNotifications.GetAll().Should().NotBeNullOrEmpty()
                                                          .And.Contain(x => x == "Book loan not found");
 
-            baseArrangements.Mocker.GetMock<IBookLoanRepository>().Verify(x => x.Update(It.IsAny<BookLoan>()), Times.Never());
+            Mocker.GetMock<IBookLoanRepository>().Verify(x => x.Update(It.IsAny<BookLoan>()), Times.Never());
 
         }
 
@@ -73,15 +70,14 @@ namespace CleanArchitectureExample.Tests.BookLoanTests.Commands
         public async void HandleReturnBookCommand_WithValidInfos_ShouldReturnNoErrors()
         {
             //Arrange
-            TestBaseArrangements baseArrangements = new TestBaseArrangements();
             ReturnBookCommand returnBookCommand = new ReturnBookCommand(Guid.NewGuid().ToString());
-            var sut = baseArrangements.Mocker.CreateInstance<ReturnBookCommandHandler>();
+            var sut = Mocker.CreateInstance<ReturnBookCommandHandler>();
 
             BookLoan bookLoan = BookLoanFactory.ReturnLoan();
             bookLoan.Book.WithBookSituation(BookSituationEnum.Lent);
 
 
-            baseArrangements.Mocker.GetMock<IBookLoanRepository>()
+            Mocker.GetMock<IBookLoanRepository>()
                        .Setup(p => p.GetByLoanId(It.IsAny<Guid>(), It.IsAny<bool>()))
                        .Returns(() => Task.FromResult<BookLoan>(bookLoan));
 
@@ -89,9 +85,9 @@ namespace CleanArchitectureExample.Tests.BookLoanTests.Commands
             ReturnBookCommandResponseViewModel result = await sut.Handle(returnBookCommand, new CancellationToken());
 
             //Assert
-            baseArrangements.DomainNotifications.GetAll().Should().BeEmpty();
+            DomainNotifications.GetAll().Should().BeEmpty();
 
-            baseArrangements.Mocker.GetMock<IBookLoanRepository>().Verify(x => x.Update(It.IsAny<BookLoan>()), Times.Once());
+            Mocker.GetMock<IBookLoanRepository>().Verify(x => x.Update(It.IsAny<BookLoan>()), Times.Once());
 
         }
     }
