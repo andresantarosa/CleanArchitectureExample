@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitectureExample.Application.Orchestration
 {
-    public class Orchestrator : IOrquestrator
+    public class Orchestrator : IOrchestrator
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IDomainNotifications _domainNotifications;

@@ -14,9 +14,9 @@ namespace CleanArchitectureExample.WebAPI.Controllers
     [ApiController]
     public class PersonController : BaseController
     {
-        private readonly IOrquestrator _orquestrator;
+        private readonly IOrchestrator _orquestrator;
 
-        public PersonController(IOrquestrator orquestrator)
+        public PersonController(IOrchestrator orquestrator)
         {
             _orquestrator = orquestrator;
         }

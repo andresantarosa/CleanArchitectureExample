@@ -15,9 +15,9 @@ namespace CleanArchitectureExample.WebAPI.Controllers
     [ApiController]
     public class BookLoanController : BaseController
     {
-        private readonly IOrquestrator _orquestrator;
+        private readonly IOrchestrator _orquestrator;
 
-        public BookLoanController(IOrquestrator orquestrator)
+        public BookLoanController(IOrchestrator orquestrator)
         {
             _orquestrator = orquestrator;
         }

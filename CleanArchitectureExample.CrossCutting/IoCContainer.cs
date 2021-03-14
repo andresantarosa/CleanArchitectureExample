@@ -36,7 +36,7 @@ namespace CleanArchitectureExample.CrossCutting
 
 
             //Inject internal work classes
-            services.AddScoped<IOrquestrator, Orchestrator>();
+            services.AddScoped<IOrchestrator, Orchestrator>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDomainNotifications, DomainNotifications>();
             services.AddSingleton<IContainer, HttpContextServiceProviderProxy>();
